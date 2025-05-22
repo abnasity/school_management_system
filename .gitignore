@@ -1,7 +1,14 @@
+
+
 # Ignore Python virtual environment
 .rest_api1/
-instance
+instance/
 .env
-abed
+abed/
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+*.db
+
