@@ -50,8 +50,8 @@ class Teachers(Resource):
 
 class Teacher(Resource):
     @marshal_with(teacher_fields)
-    def get(self, teacher_id):
-        teachers = TeacherModel.query.get(teacher_id)
+    def get(self, id):
+        teachers = TeacherModel.query.filter_by(id=id).first()
         if not teachers:
             abort(404, message="Teachers not found")
         return teachers
@@ -84,9 +84,9 @@ class Teacher(Resource):
         
 # edit a teacher
     @marshal_with(teacher_fields)
-    def put(self, teacher_id):
+    def patch(self, id):
         args = teacher_args.parse_args()
-        teacher = TeacherModel.query.get(teacher_id)
+        teacher = TeacherModel.query.filter_by(id=id).first()
         if not teacher:
             abort(404, message="Teacher not found")
 
@@ -102,8 +102,8 @@ class Teacher(Resource):
 
 
 # delete teacher
-    def delete(self, teacher_id):
-        teacher = TeacherModel.query.get(teacher_id)
+    def delete(self, id):
+        teacher = TeacherModel.query.filter_by(id=id).first()
         if not teacher:
             abort(404, message="Teacher not found")
 
