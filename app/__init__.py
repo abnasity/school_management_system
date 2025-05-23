@@ -18,7 +18,7 @@ migrate = Migrate(app,db)
 api.add_resource(Users,'/api/users/')
 api.add_resource(User,'/api/users/<int:id>')
 api.add_resource(Teachers, '/api/teachers')
-api.add_resource(Teacher, '/api/teachers/<int:teacher_id>')
+api.add_resource(Teacher, '/api/teachers/<int:id>')
 
     
 
