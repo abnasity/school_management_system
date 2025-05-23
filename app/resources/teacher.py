@@ -24,7 +24,7 @@ teacher_fields = {
 
 
 
-class NewTeachers(Resource):
+class Teachers(Resource):
     @marshal_with(teacher_fields)
     def post(self):
         args = teacher_args.parse_args()
@@ -48,7 +48,7 @@ class NewTeachers(Resource):
 
 
 
-class Teachers(Resource):
+class Teacher(Resource):
     @marshal_with(teacher_fields)
     def get(self, teacher_id):
         teachers = TeacherModel.query.get(teacher_id)
