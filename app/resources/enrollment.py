@@ -20,3 +20,27 @@ enrollment_fields = {
     'status' : fields.String
 }
 
+
+# Enrollments Resource
+class Enrollment(Resource):
+    @marshal_with(enrollment_fields)
+    def get(self):
+        # Implement the logic for GET request here
+        # For example, return all enrollments
+        enrollments = EnrollmentModel.query.all()
+        if not enrollments:
+            abort (404, message="Enrollments not found")
+        return enrollments
+    
+    @marshal_with(enrollment_fields)
+    def post(self):
+        args = enrollment_args.parse_args()
+        enrollment = EnrollmentModel(
+            student_id=args['student_id'],
+            course_id=args['course_id'],
+            enrollment_date=args['enrollment_date'],
+            status=args['status']
+        )
+        db.session.add(enrollment)
+        db.session.commit()
+        return enrollment, 201
