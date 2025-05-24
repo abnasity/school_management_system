@@ -55,12 +55,12 @@ class CourseModel(Resource):
         if not course:
             abort(404, message="Could not find course")
         try:
-            course = CourseModel(
-                code=args['code'],
-                name=args['name'],
-                credits=args['credits'],
-                teacher_id=args['teacher_id']
-            )
+            
+            course.code = args['code']
+            course.name = args['name']
+            course.credits = args['credits']
+            course.teacher_id = args['teacher_id']
+            
             
             db.session.commit()
             return course,200
@@ -68,3 +68,25 @@ class CourseModel(Resource):
             db.session.rollback()
             abort(400, message=f"Error. could not update a course {str(e)}")
         
+        
+    @marshal_with(course_fields)
+    def patch(self, id):
+        args = course_args.parse_args()
+        course = CourseModel.query.filter_by(id=id).first()
+        if not course:
+            abort(404, message="Could not find course")
+        try:
+            
+            course.code = args['code']
+            
+            course.name = args['name']
+            
+            course.credits = args['credits']
+            
+            course.teacher_id = args['teacher_id']
+            
+            db.session.commit()
+            return course,200
+        except Exception as e:
+            db.session.rollback()
+            abort(400, message=f"Error. could not update a course {str(e)}")
