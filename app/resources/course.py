@@ -20,3 +20,15 @@ course_fields = {
     'credits': fields.Integer,
     'teacher_id': fields.Integer
 }
+
+
+# COURSE RESOURCE
+class CourseModel(Resource):
+    @marshal_with(course_fields)
+    def get(self):
+        courses = CourseModel.query.all()
+        if not courses:
+            abort(404, message="Courses not found")
+        return courses
+    
+    
