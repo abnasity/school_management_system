@@ -15,7 +15,8 @@ enrollment_args.add_argument('status', type=str, default='active') #if the clien
 enrollment_fields = {
     'id' : fields.Integer,
     'student_id' : fields.Integer,
-    'Course_id' : fields.Integer,
+    'course_id' : fields.Integer,
     'enrollment_date' : fields.DateTime,
     'status' : fields.String
 }
+
