@@ -31,4 +31,20 @@ class CourseModel(Resource):
             abort(404, message="Courses not found")
         return courses
     
-    
+    @marshal_with(course_fields)
+    def post(self):
+        args = course_args.parse_args()
+        try:
+            course = CourseModel(
+                code=args['code'],
+                name=args['name'],
+                credits=args['credits'],
+                teacher_id=args['teacher_id']
+            )
+            db.session.add(course)
+            db.session.commit()
+            return course,201
+        except Exception as e:
+            db.session.rollback()
+            abort(400, message=f"Error. could not create course {str(e)}")
+        
