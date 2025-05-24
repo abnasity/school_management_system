@@ -10,3 +10,12 @@ enrollment_args.add_argument('student_id', type=int, help="Student ID cannot be 
 enrollment_args.add_argument('course_id', type=str, help="Course ID cannot be empty")
 enrollment_args.add_argument('enrollment_date', type=date_parser)
 enrollment_args.add_argument('status', type=str, default='active') #if the client does not provide a status value it'll be set to active by default
+
+# Response Fields
+enrollment_fields = {
+    'id' : fields.Integer,
+    'student_id' : fields.Integer,
+    'Course_id' : fields.Integer,
+    'enrollment_date' : fields.DateTime,
+    'status' : fields.String
+}
