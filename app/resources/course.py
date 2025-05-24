@@ -90,3 +90,18 @@ class CourseModel(Resource):
         except Exception as e:
             db.session.rollback()
             abort(400, message=f"Error. could not update a course {str(e)}")
+            
+    @marshal_with(course_fields)
+    def delete(self, id):
+     course = CourseModel.query.filter_by(id=id).first()
+     if not course:
+          abort(400, message="Course not found")
+     try:
+            db.session.delete(course)
+            db.session.commit()
+            return'', 204
+     except Exception as e:
+            db.session.rollback()
+            abort(404, message=f"Error. could not delete the course {str(e)}")
+           
+    
