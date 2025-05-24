@@ -68,3 +68,17 @@ class Enrollment(Resource):
         except Exception as e:
              db.session.rollback()
              abort(400, message=f"could not update the enrollment. {str(e)}")
+             
+    @marshal_with(enrollment_fields)
+    def delete(self, id):
+        enrollment = EnrollmentModel.query.filter_by(id=id).first
+        if not enrollment:
+            abort(400, message="enrollment not found")
+        try:
+            db.session.delete(enrollment)
+            db.session.commit()
+            return '', 204
+        except Exception as e:
+            db.session.rollback()
+            abort(400, message=f"Error: Could not delete the enrollment. {str(e)}")
+        
