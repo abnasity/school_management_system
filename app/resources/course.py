@@ -25,10 +25,10 @@ course_fields = {
 # COURSE RESOURCE
 class CourseModel(Resource):
     @marshal_with(course_fields)
-    def get(self):
-        courses = CourseModel.query.all()
+    def get(self, id):
+        courses = CourseModel.query.filter_by(id=id).first
         if not courses:
-            abort(404, message="Courses not found")
+            abort(404, message="Course not found")
         return courses
     
     @marshal_with(course_fields)
@@ -47,4 +47,24 @@ class CourseModel(Resource):
         except Exception as e:
             db.session.rollback()
             abort(400, message=f"Error. could not create course {str(e)}")
+        
+    @marshal_with(course_fields)
+    def put(self, id):
+        args = course_args.parse_args
+        course = CourseModel.query.filter_by(id=id).first()
+        if not course:
+            abort(404, message="Could not find course")
+        try:
+            course = CourseModel(
+                code=args['code'],
+                name=args['name'],
+                credits=args['credits'],
+                teacher_id=args['teacher_id']
+            )
+            
+            db.session.commit()
+            return course,200
+        except Exception as e:
+            db.session.rollback()
+            abort(400, message=f"Error. could not update a course {str(e)}")
         
