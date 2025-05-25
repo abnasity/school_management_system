@@ -33,13 +33,7 @@ class Courses(Resource):
 
 
 # COURSE RESOURCE
-class CourseModel(Resource):
-    @marshal_with(course_fields)
-    def get(self, id):
-        courses = CourseModel.query.filter_by(id=id).first
-        if not courses:
-            abort(404, message="Course not found")
-        return courses
+
     
     @marshal_with(course_fields)
     def post(self):
@@ -58,6 +52,16 @@ class CourseModel(Resource):
             db.session.rollback()
             abort(400, message=f"Error. could not create course {str(e)}")
         
+class Course(Resource):
+    @marshal_with(course_fields)
+    def get(self, id):
+        courses = CourseModel.query.filter_by(id=id).first
+        if not courses:
+            abort(404, message="Course not found")
+        return courses
+        
+        
+
     @marshal_with(course_fields)
     def put(self, id):
         args = course_args.parse_args
