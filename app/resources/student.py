@@ -69,3 +69,14 @@ class Student(Resource):
         student.enrollment_date = args['enrollment_date']
         db.session.commit()
         return student, 200
+    
+    
+# Delete a student
+    @marshal_with(student_fields)
+    def delete(self, id):
+        student = StudentModel.query.filter_by(id=id).first()
+        if not student:
+            abort(404, message='Student not found')
+        db.session.delete(student)
+        db.session.commit()
+        return '', 204
