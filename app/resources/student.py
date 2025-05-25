@@ -42,3 +42,12 @@ class Students(Resource):
         db.session.add(student)
         db.session.commit()
         return student, 201
+    
+# Specific student, edit and delete a student
+class Student(Resource):
+    @marshal_with(student_fields)
+    def get(self, id):
+        student = StudentModel.query.filter_by(id=id).first()
+        if not student:
+            abort(404, message='Student not found')
+        return student, 200
