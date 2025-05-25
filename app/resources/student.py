@@ -51,3 +51,21 @@ class Student(Resource):
         if not student:
             abort(404, message='Student not found')
         return student, 200
+    
+    
+    @marshal_with(student_fields)
+    def put(self, id):
+        args = student_args.parse_args()
+        student = StudentModel.query.filter_by(id=id).first()
+        if not student:
+            abort(404, message='Student not found')
+        # for key, value in args.items():
+        #     setattr(student, key, value)
+        student.first_name = args['first_name']
+        student.last_name = args['last_name']
+        student.student_id = args['student_id']
+        student.email = args['email']
+        student.date_of_birth = args['date_of_birth']
+        student.enrollment_date = args['enrollment_date']
+        db.session.commit()
+        return student, 200
