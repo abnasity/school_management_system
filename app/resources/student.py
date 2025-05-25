@@ -33,3 +33,12 @@ class Students(Resource):
         if not students:
             abort(404, message='Students not found')
         return students
+    
+  # Create a student
+    @marshal_with(student_fields)
+    def post(self):
+        args = student_args.parse_args()
+        student = StudentModel(**args)
+        db.session.add(student)
+        db.session.commit()
+        return student, 201
