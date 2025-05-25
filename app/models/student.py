@@ -11,8 +11,8 @@ class StudentModel(db.Model):
     student_id = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(120), nullable=False, unique=True)
     date_of_birth = db.Column(db.Date)
-    enrolment_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    enrolments = db.relationship('EnrollmentModel', backref='student', lazy=True)
+    enrollment_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    enrollments = db.relationship('EnrollmentModel', backref='student', lazy=True)
     fees = db.relationship('FeeModel', backref='student_ref', lazy=True)
     
     def __repr__(self):
