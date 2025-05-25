@@ -1,7 +1,7 @@
 from flask_restful import Resource, abort, marshal_with, fields, reqparse
 from app.extension import db
 from app.models.student import StudentModel
-from dateutil.parser import parser as date_parse
+from dateutil.parser import parse as date_parse
 
 # Request Parser
 student_args = reqparse.RequestParser()
