@@ -11,3 +11,15 @@ student_args.add_argument('student_id', type=str, required=True, help="Student I
 student_args.add_argument('email', type=str, required=True, help="student email cannot be blank")
 student_args.add_argument('date_of_birth', type=date_parse)
 student_args.add_argument('enrollment_date', type=date_parse)
+
+
+# output field
+student_fields = {
+    'id':fields.Integer,
+    'first_name':fields.String,
+    'last_name':fields.String,
+    'student_id':fields.String,
+    'email':fields.String,
+    'date_of_birth':fields.DateTime,
+    'enrollment_date':fields.DateTime
+}
