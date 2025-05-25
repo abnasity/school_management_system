@@ -23,3 +23,13 @@ student_fields = {
     'date_of_birth':fields.DateTime,
     'enrollment_date':fields.DateTime
 }
+
+# Resources
+class Students(Resource):
+    # Get all students
+    @marshal_with(student_fields)
+    def get(self):
+        students = StudentModel.query.all()
+        if not students:
+            abort(404, message='Students not found')
+        return students
