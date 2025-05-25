@@ -22,9 +22,9 @@ enrollment_fields = {
 
 
 # Enrollments Resource
-class Enrollment(Resource):
+class Enrollments(Resource):
     @marshal_with(enrollment_fields)
-    def get(self, id):
+    def get(self):
         # Implement the logic for GET request here
         # For example, return all enrollments
         enrollments = EnrollmentModel.query.filter_by(id=id).first
@@ -48,6 +48,15 @@ class Enrollment(Resource):
         except Exception as e:
             db.session.rollback()
             abort(400, message=f"Error: Could not create an enrollment. {str(e)}")
+            
+            
+class Enrollment(Resource):
+    @marshal_with(enrollment_fields)
+    def get(self, id):
+        enrollment = EnrollmentModel.query.filter_by(id=id).first()
+        if not enrollment:
+            abort(404, message='Enrollment not found')
+        return enrollment
             
     @marshal_with(enrollment_fields)
     def patch(self, id):
