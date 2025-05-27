@@ -66,6 +66,60 @@ class Users(Resource):
     #create a user
     @marshal_with(user_fields)
     def post(self):
+        """Create a new user
+        ---
+        tags:
+            - Users
+        summary: Create a new user
+        description: This endpoint creates a new user in the system.
+        parameters:
+            - in: body
+              name: user
+              description: User data
+              required: true
+              schema:
+                  type: object
+                  required:
+                      - username
+                      - email
+                      - password
+                  properties:
+                      username:
+                          type: string
+                          description: The username for the user
+                      email:
+                          type: string
+                          description: The email address of the user
+                      password:
+                          type: string
+                          description: The password for the user
+        responses:
+            201:
+                description: User created successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the created user
+                        username:
+                            type: string
+                            description: The username of the user
+                        email:
+                            type: string
+                            description: The email address of the user
+                        password:
+                            type: string
+                            description: The password of the user
+            400:
+                description: Bad request - validation error
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Error message
+        """
         args = user_args.parse_args()
         try:
             existing_user = UserModel.query.filter_by(username=args['username']).first()
@@ -84,6 +138,45 @@ class Users(Resource):
 class User(Resource):
     @marshal_with(user_fields)
     def get(self,id):
+        """Get a specific user by ID
+        ---
+        tags:
+            - Users
+        summary: Retrieve a user by ID
+        description: This endpoint retrieves a specific user by their ID.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the user
+        responses:
+            200:
+                description: User retrieved successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the user
+                        username:
+                            type: string
+                            description: The username of the user
+                        email:
+                            type: string
+                            description: The email address of the user
+                        password:
+                            type: string
+                            description: The password of the user
+            404:
+                description: User not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: User not found!
+        """
         user = UserModel.query.filter_by(id=id).first()
         if not user:
             abort (404,message='User not found')
@@ -91,6 +184,65 @@ class User(Resource):
     
     @marshal_with(user_fields)
     def patch(self,id):
+        """Update a user by ID
+        ---
+        tags:
+            - Users
+        summary: Update a user
+        description: This endpoint updates an existing user's information.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the user
+            - in: body
+              name: user
+              description: Updated user data
+              required: true
+              schema:
+                  type: object
+                  required:
+                      - username
+                      - email
+                      - password
+                  properties:
+                      username:
+                          type: string
+                          description: The username for the user
+                      email:
+                          type: string
+                          description: The email address of the user
+                      password:
+                          type: string
+                          description: The password for the user
+        responses:
+            200:
+                description: User updated successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the user
+                        username:
+                            type: string
+                            description: The username of the user
+                        email:
+                            type: string
+                            description: The email address of the user
+                        password:
+                            type: string
+                            description: The password of the user
+            404:
+                description: User not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: User not found!
+        """
         args = user_args.parse_args()
         user = UserModel.query.filter_by(id=id).first()
         if not user:
@@ -103,6 +255,47 @@ class User(Resource):
 
     @marshal_with(user_fields) 
     def delete(self,id):
+        """Delete a user by ID
+        ---
+        tags:
+            - Users
+        summary: Delete a user
+        description: This endpoint deletes a user from the system.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the user
+        responses:
+            200:
+                description: User deleted successfully and remaining users returned
+                schema:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                description: The unique identifier of the user
+                            username:
+                                type: string
+                                description: The username of the user
+                            email:
+                                type: string
+                                description: The email address of the user
+                            password:
+                                type: string
+                                description: The password of the user
+            404:
+                description: User not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: User not found!
+        """
         user = UserModel.query.filter_by(id=id).first()
         if not user:
             abort(404,message="cannot delete a non existing user")
