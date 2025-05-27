@@ -26,9 +26,51 @@ class Courses(Resource):
     # Get all students
     @marshal_with(course_fields)
     def get(self):
+        """Get all courses
+        ---
+        tags:
+            - Courses
+        summary: Retrieve all courses
+        description: This endpoint retrieves all courses from the system.
+        responses:
+            200:
+                description: List of all courses retrieved successfully
+                schema:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                description: The unique identifier of the course
+                            code:
+                                type: string
+                                description: The course code
+                            name:
+                                type: string
+                                description: The name of the course
+                            credits:
+                                type: integer
+                                description: The number of credits for the course
+                            teacher_id:
+                                type: integer
+                                description: The ID of the assigned teacher
+            404:
+                description: No courses found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Courses not found!
+        """
+        
+        
+        
+        
         courses = CourseModel.query.all()
         if not courses:
-            abort(404, message='Courses not found')
+            abort(404, message="Courses not found")
         return courses
 
 
