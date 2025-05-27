@@ -8,7 +8,7 @@ from dateutil import parser as date_parser
 fee_args = reqparse.RequestParser()
 fee_args.add_argument('student_id', type=int, required=True, help="Student ID cannot be empty.")
 fee_args.add_argument('amount', type=float, required=True, help="Amount cannot be empty.")
-fee_args.add_argument('payment_date', type=date_parser)
+fee_args.add_argument('payment_date', type=str)
 fee_args.add_argument('status', type=str, default='pending', help="Status defaults to 'pending'.")
 fee_args.add_argument('semester', type=str, help="Semester cannot be empty.")
 fee_args.add_argument('fee_type', type=str, required=True, help="Fee type cannot be empty.")
@@ -18,7 +18,7 @@ fee_fields = {
     'id': fields.Integer,
     'student_id': fields.Integer,
     'amount': fields.Float,
-    'payment_date': fields.DateTime,
+    'payment_date': fields.String,
     'status': fields.String,
     'semester': fields.String,
     'fee_type': fields.String
@@ -27,23 +27,65 @@ fee_fields = {
 class Fees(Resource):
     @marshal_with(fee_fields)
     def get(self):
+        """Get all fees
+        ---
+        tags:
+            - Fees
+        summary: Retrieve all fees
+        description: This endpoint retrieves all fees from the system.
+        responses:
+            200:
+                description: List of all fees retrieved successfully
+                schema:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                description: The unique identifier of the fee
+                            student_id:
+                                type: integer
+                                description: The ID of the student
+                            amount:
+                                type: number
+                                format: float
+                                description: The amount of the fee
+                            fee_type:
+                                type: string
+                                description: The type of fee
+                            semester:
+                                type: string
+                                description: The semester for the fee
+                            payment_date:
+                                type: string
+                                format: date-time
+                                description: The payment date of the fee
+                            status:
+                                type: string
+                                description: The status of the fee payment
+            404:
+                description: No fees found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Fees not found!
+        """
         fees = FeeModel.query.all()
         if not fees:
-            abort(404, message='Fees not found.')
+            abort(404, message="Fees not found")
         return fees
+       
 
     @marshal_with(fee_fields)
     def post(self):
         args = fee_args.parse_args()
-
+     
+      
         # Parse payment_date manually
-        payment_date = None
-        if args.payment_date:
-            try:
-                payment_date = datetime.fromisoformat(args.payment_date)
-            except ValueError:
-                abort(400, message="Invalid date format.")
-
+        payment_date = date_parser.parse(args['payment_date']).date() if args['payment_date'] else None
         try:
             fee = FeeModel(
                 student_id=args.student_id,
