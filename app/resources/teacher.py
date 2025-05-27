@@ -45,7 +45,64 @@ class Teachers(Resource):
         db.session.commit()
         return new_teacher, 201
 
-
+class Teachers(Resource):
+    @marshal_with(teacher_fields)
+    def get(self):
+        """Get all teachers
+        ---
+        tags:
+            - Teachers
+        summary: Retrieve all teachers
+        description: This endpoint retrieves all teachers from the system.
+        responses:
+            200:
+                description: List of all teachers retrieved successfully
+                schema:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                description: The unique identifier of the teacher
+                            first_name:
+                                type: string
+                                description: The first name of the teacher
+                            last_name:
+                                type: string
+                                description: The last name of the teacher
+                            email:
+                                type: string
+                                description: The email address of the teacher
+                            phone:
+                                type: string
+                                description: The phone number of the teacher
+                            department:
+                                type: string
+                                description: The department of the teacher
+                            credits:
+                                type: integer
+                                description: The credits of the teacher
+                            courses:
+                                type: string
+                                description: The courses taught by the teacher
+                            hire_date:
+                                type: string
+                                format: date-time
+                                description: The hire date of the teacher
+            404:
+                description: No teachers found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Teachers not found!
+        """
+        teachers = TeacherModel.query.all()
+        if not teachers:
+            abort(404, message="Teachers not found")
+        return teachers
 
 
 class Teacher(Resource):
