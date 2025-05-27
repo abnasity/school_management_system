@@ -81,6 +81,82 @@ class Fees(Resource):
 
     @marshal_with(fee_fields)
     def post(self):
+        """Create a new fee
+        ---
+        tags:
+            - Fees
+        summary: Create a new fee
+        description: This endpoint creates a new fee in the system.
+        parameters:
+            - in: body
+              name: fee
+              description: Fee data
+              required: true
+              schema:
+                  type: object
+                  required:
+                      - student_id
+                      - amount
+                      - fee_type
+                  properties:
+                      student_id:
+                          type: integer
+                          description: The ID of the student
+                      amount:
+                          type: number
+                          format: float
+                          description: The amount of the fee
+                      fee_type:
+                          type: string
+                          description: The type of fee
+                      semester:
+                          type: string
+                          description: The semester for the fee
+                      payment_date:
+                          type: string
+                          format: date-time
+                          description: The payment date of the fee
+                      status:
+                          type: string
+                          description: The status of the fee payment
+        responses:
+            201:
+                description: Fee created successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the created fee
+                        student_id:
+                            type: integer
+                            description: The ID of the student
+                        amount:
+                            type: number
+                            format: float
+                            description: The amount of the fee
+                        fee_type:
+                            type: string
+                            description: The type of fee
+                        semester:
+                            type: string
+                            description: The semester for the fee
+                        payment_date:
+                            type: string
+                            format: date-time
+                            description: The payment date of the fee
+                        status:
+                            type: string
+                            description: The status of the fee payment
+            400:
+                description: Bad request - validation error
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Error message
+        """
         args = fee_args.parse_args()
      
       
@@ -105,13 +181,152 @@ class Fees(Resource):
 class Fee(Resource):
     @marshal_with(fee_fields)
     def get(self, id):
+        """Get a specific fee by ID
+        ---
+        tags:
+            - Fees
+        summary: Retrieve a fee by ID
+        description: This endpoint retrieves a specific fee by its ID.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the fee
+        responses:
+            200:
+                description: Fee retrieved successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the fee
+                        student_id:
+                            type: integer
+                            description: The ID of the student
+                        amount:
+                            type: number
+                            format: float
+                            description: The amount of the fee
+                        fee_type:
+                            type: string
+                            description: The type of fee
+                        semester:
+                            type: string
+                            description: The semester for the fee
+                        payment_date:
+                            type: string
+                            format: date-time
+                            description: The payment date of the fee
+                        status:
+                            type: string
+                            description: The status of the fee payment
+            404:
+                description: Fee not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Fee not found!
+        """
         fee = FeeModel.query.filter_by(id=id).first()
         if not fee:
             abort(404, message='Fee not found')
         return fee
     
     @marshal_with(fee_fields)
-    def patch(self, id):
+    def put(self, id):
+        """Update a fee by ID
+        ---
+        tags:
+            - Fees
+        summary: Update a fee
+        description: This endpoint updates an existing fee's information.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the fee
+            - in: body
+              name: fee
+              description: Updated fee data
+              required: true
+              schema:
+                  type: object
+                  required:
+                      - student_id
+                      - amount
+                      - fee_type
+                  properties:
+                      student_id:
+                          type: integer
+                          description: The ID of the student
+                      amount:
+                          type: number
+                          format: float
+                          description: The amount of the fee
+                      fee_type:
+                          type: string
+                          description: The type of fee
+                      semester:
+                          type: string
+                          description: The semester for the fee
+                      payment_date:
+                          type: string
+                          format: date-time
+                          description: The payment date of the fee
+                      status:
+                          type: string
+                          description: The status of the fee payment
+        responses:
+            200:
+                description: Fee updated successfully
+                schema:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: The unique identifier of the fee
+                        student_id:
+                            type: integer
+                            description: The ID of the student
+                        amount:
+                            type: number
+                            format: float
+                            description: The amount of the fee
+                        fee_type:
+                            type: string
+                            description: The type of fee
+                        semester:
+                            type: string
+                            description: The semester for the fee
+                        payment_date:
+                            type: string
+                            format: date-time
+                            description: The payment date of the fee
+                        status:
+                            type: string
+                            description: The status of the fee payment
+            404:
+                description: Fee not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Fee not found!
+            400:
+                description: Bad request - validation error
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Error message
+        """
         args = fee_args.parse_args()
         fee = FeeModel.query.filter_by(id=id).first()
         if not fee:
@@ -131,6 +346,38 @@ class Fee(Resource):
         
     @marshal_with(fee_fields)
     def delete(self, id):
+        """Delete a fee by ID
+        ---
+        tags:
+            - Fees
+        summary: Delete a fee
+        description: This endpoint deletes a fee from the system.
+        parameters:
+            - in: path
+              name: id
+              type: integer
+              required: true
+              description: The unique identifier of the fee
+        responses:
+            204:
+                description: Fee deleted successfully
+            404:
+                description: Fee not found
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Fee not found!
+            400:
+                description: Bad request - error deleting fee
+                schema:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            description: Error message
+        """
         fee = FeeModel.query.filter_by(id=id).first()
         if not fee:
             abort(404, message='Fee not found')
